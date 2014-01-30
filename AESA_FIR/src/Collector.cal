@@ -1,0 +1,27 @@
+actor Collector () In_0, In_1, In_2, In_3, In_4, In_5, In_6, In_7 ==> Out_0, Out_1, Out_2, Out_3, Out_4, Out_5, Out_6, Out_7:
+
+	a0: action In_0:[c_image] ==> Out_0:[c_image]
+	end
+
+	a1: action In_1:[c_image] ==> Out_1:[c_image]
+	end
+
+	a2: action In_2:[c_image] ==> Out_2:[c_image]
+	end
+
+	a3: action In_3:[c_image] ==> Out_3:[c_image]
+	end
+
+	a4: action In_4:[c_image] ==> Out_4:[c_image]
+	end
+
+	a5: action In_5:[c_image] ==> Out_5:[c_image]
+	end
+
+	a6: action In_6:[c_image] ==> Out_6:[c_image]
+	end
+
+	a7: action In_7:[c_image] ==> Out_7:[c_image]
+	end
+
+end

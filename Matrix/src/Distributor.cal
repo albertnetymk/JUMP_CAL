@@ -1,0 +1,39 @@
+actor Distributor (length) W, Image ==> W_0, W_1, W_2, W_3, W_4, W_5, W_6, W_7, I_out:
+	a0: action W:[weight] repeat length ==> W_0:[weight] repeat length
+	end
+
+	a1: action W:[weight] repeat length ==> W_1:[weight] repeat length
+	end
+
+	a2: action W:[weight] repeat length ==> W_2:[weight] repeat length
+	end
+
+	a3: action W:[weight] repeat length ==> W_3:[weight] repeat length
+	end
+
+	a4: action W:[weight] repeat length ==> W_4:[weight] repeat length
+	end
+
+	a5: action W:[weight] repeat length ==> W_5:[weight] repeat length
+	end
+
+	a6: action W:[weight] repeat length ==> W_6:[weight] repeat length
+	end
+
+	a7: action W:[weight] repeat length ==> W_7:[weight] repeat length
+	end
+
+	a8: action Image:[image] ==> I_out:[image] end
+
+	schedule fsm s0 :
+	  s0 (a0) --> s1;
+	  s1 (a1) --> s2;
+	  s2 (a2) --> s3;
+	  s3 (a3) --> s4;
+	  s4 (a4) --> s5;
+	  s5 (a5) --> s6;
+	  s6 (a6) --> s7;
+	  s7 (a7) --> s8;
+	  s8 (a8) --> s8;
+	end
+end

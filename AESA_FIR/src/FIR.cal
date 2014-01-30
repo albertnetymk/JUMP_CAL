@@ -1,0 +1,73 @@
+actor FIR (offset, row) Taps, In ==> Out :
+	// sed
+	// N -> 105
+	// (N-offset) -> 53
+	//
+	// sed finished
+	N := 105;
+
+    rowCounter := 0;
+	taps := [];
+	data := [0 : for i in 1..N];
+    function conjf (x) :
+        x
+    end
+    function sum (L) :
+        // accumulate(lambda (x, y) : x + y end, 0, L)
+        1
+    end
+
+    a0:action Taps:[t] repeat N ==>
+    do
+        taps := conjf(t);
+    end
+
+    a1:action In:[a] repeat (N-offset) ==> Out:[b]
+    var
+        newData = [data[i] : for i in  offset+1..N-1] + a,
+        b =  sum([taps[i] * newData[i] : for i in 0..N-1])
+    do
+        rowCounter := rowCounter + (N-offset);
+        data := newData;
+    end
+
+    a2:action In:[a] ==> Out:[b]
+    guard rowCounter < row
+    var
+        newData = [data[i] : for i in 1..N-1] + [a],
+
+        b =  sum([taps[i] * newData[i] : for i in 0..N-1])
+    do
+        rowCounter := rowCounter + 1;
+        data := newData;
+    end
+
+    a3:action In:[] ==> Out:[b]
+    guard (rowCounter >= row and rowCounter < row + offset)
+    var
+        newData = [data[i] : for i in 1..N-1] + [0],
+
+        b =  sum([taps[i] * newData[i] : for i in 0..N-1])
+    do
+        rowCounter := rowCounter + 1;
+        data := newData;
+    end
+
+    a4:action ==>
+    guard rowCounter = row + offset
+    var
+        newData = [data[i] : for i in 1..N-1] + [0]
+    do
+        rowCounter := 0;
+    end
+
+    schedule fsm s0 :
+      s0 (a0) --> s1;
+      s1 (a1) --> s2;
+      s2 (a2) --> s2;
+      s2 (a2) --> s3;
+      s3 (a3) --> s3;
+      s3 (a3) --> s4;
+      s4 (a4) --> s1;
+    end
+end

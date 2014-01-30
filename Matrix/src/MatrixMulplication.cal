@@ -1,0 +1,40 @@
+actor MatrixMulplication (length) Weight, Image ==> Out:
+	result := 0;
+	iterator := 0;
+	weights := [];
+	a0: action Weight:[w] repeat length ==>
+	do
+		weights := w;
+		// println(a);
+	end
+    a1: action Image:[image] ==>
+    guard
+        iterator = 0
+    do
+       result := weights[iterator] * image;
+       iterator := iterator + 1;
+    end
+    a2: action Image:[image] ==>
+    guard
+        iterator < length - 1
+    do
+       result := result + (weights[iterator] * image);
+       iterator := iterator + 1;
+    end
+    a3: action Image:[image] ==> Out:[result]
+    guard
+        iterator = length - 1
+    do
+       result := result + (weights[iterator] * image);
+       iterator := 0;
+       // println(result);
+    end
+
+	schedule fsm s0 :
+	  s0 (a0) --> s1;
+	  s1 (a1) --> s2;
+	  s2 (a2) --> s2;
+	  s2 (a3) --> s1;
+	  // s3 (a3) --> s1;
+	end
+end

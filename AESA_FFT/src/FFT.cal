@@ -1,0 +1,67 @@
+actor FFT (nfft, columns) W, In ==> Out :
+	weights := [];
+	list := [];
+	input_index := 0;
+
+	function timeWeights (l) :
+		[(weights[i] * l[i]) : for i in 0..nfft-1]
+	end
+
+	function fft (l) :
+		l
+	end
+
+	// function fft (l) :
+	//     if #l = 2 then
+	//         [l[0] + l[1], l[0] - l[1]]
+	//     else
+	//         let half := #l/2,
+	//             first := fft([l[i*2] : for i in 0..half-1]),
+	//             second := fft([l[i*2+1] : for i in 0..half-1]),
+	//             second_twiddle := [second[i] * complex(0, -3.14 * i /half) : for i in 0..half-1],
+	//             first_part := [first[i] + second_twiddle[i] : for i in 0..half-1],
+	//             second_part := [first[i] - second_twiddle[i] : for i in 0..half-1]
+	//             : first_part + second_part
+	//         end
+	//     end
+	// end
+
+	a:action W:[weight] repeat nfft ==>
+	do
+		weights := weight;
+	end
+
+	a0:action In:[v] repeat nfft ==> Out:[r] repeat nfft
+	var
+		r
+	do
+		list := v;
+		r := fft(timeWeights(list));
+		input_index := nfft;
+	end
+
+	a1:action In:[v] repeat nfft/2 ==> Out:[r] repeat nfft
+	guard input_index < columns
+	var
+		r
+	do
+		list := [list[i] : for i in nfft/2..nfft-1] + v;
+		r := fft(timeWeights(list));
+		input_index := input_index + (nfft/2);
+	end
+
+	a2:action ==> Out:[r] repeat nfft
+	guard input_index = columns
+	var
+		r
+	do
+		r := [0 : for i in 0..nfft];
+	end
+
+	schedule fsm s :
+	  s (a) --> s0;
+	  s0 (a0) --> s1;
+	  s1 (a1) --> s1;
+	  s1 (a2) --> s0;
+	end
+end
